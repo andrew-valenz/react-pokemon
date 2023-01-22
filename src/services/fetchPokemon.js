@@ -1,15 +1,11 @@
 export async function fetchInitialPokemon() {
-  const resp = await fetch(
-    'https://alchemy-pokedex.herokuapp.com/api/pokedex/5ff4fb7cd89993a89cc6544f'
-  );
+  const resp = await fetch('https://alchemy-pokedex.herokuapp.com/api/pokedex');
   const data = await resp.json();
   return data.results;
 }
 
 export async function fetchTypes() {
-  const resp = await fetch(
-    'https://alchemy-pokedex.herokuapp.com/api/pokedex/5ff4fb7cd89993a89cc6544f'
-  );
+  const resp = await fetch('https://alchemy-pokedex.herokuapp.com/api/pokedex/types');
   const data = await resp.json();
   return data;
 }
