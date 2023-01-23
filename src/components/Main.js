@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {
-  fetchInitialPokemon,
-  fetchTypes,
-  fetchPokemonType,
-  fetchPokemon,
-} from '../services/fetchPokemon.js';
+import { fetchTypes, fetchPokemon } from '../services/fetchPokemon.js';
 import Select from './Select/Select';
 import SearchBar from './SearchBar.js';
+import './Main.css';
 
 export default function Main() {
   const [types, setTypes] = useState([]);
@@ -16,7 +12,6 @@ export default function Main() {
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
-    console.log('searchTerm', searchTerm);
   };
 
   const handleTypeChange = (type) => {
@@ -51,17 +46,17 @@ export default function Main() {
   }, [selectedType, searchTerm]);
 
   return (
-    <>
-      <SearchBar keyword={searchTerm} onChange={handleSearch} />
-      <Select types={types} handleTypeChange={handleTypeChange} />
-      <div>
+    <div className="main">
+      <SearchBar className="searchBar" keyword={searchTerm} onChange={handleSearch} />
+      <Select className="select" types={types} handleTypeChange={handleTypeChange} />
+      <div className="container">
         {pokemonToDisplay.map((poke) => (
-          <div key={poke._id}>
-            {poke.pokemon} {poke.type_1} {poke.type_2}
+          <div className="pokeCard" key={poke._id}>
+            Name: {poke.pokemon} Type: {poke.type_1} Attack: {poke.attack} Defense: {poke.defense}
             <img src={poke.url_image} />
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
