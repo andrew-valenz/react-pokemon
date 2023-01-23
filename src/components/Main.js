@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { fetchInitialPokemon, fetchTypes, fetchPokemonType } from '../services/fetchPokemon.js';
+import {
+  fetchInitialPokemon,
+  fetchTypes,
+  fetchPokemonType,
+  fetchPokemon,
+} from '../services/fetchPokemon.js';
 import Select from './Select/Select';
+import SearchBar from './SearchBar.js';
 
 export default function Main() {
   const [types, setTypes] = useState([]);
   const [selectedType, setSelectedType] = useState('all');
   const [pokemonToDisplay, setPokemonToDisplay] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    console.log('searchTerm', searchTerm);
+  };
 
   const handleTypeChange = (type) => {
     setSelectedType(type);
@@ -14,7 +26,6 @@ export default function Main() {
   useEffect(() => {
     const fetchTypesData = async () => {
       const data = await fetchTypes();
-      console.log(data);
       data.unshift({ count: null, type: 'all' });
       setTypes(data);
     };
@@ -22,23 +33,26 @@ export default function Main() {
   }, []);
 
   useEffect(() => {
-    if (selectedType === 'all') {
-      const fetchPokemon = async () => {
-        const data = await fetchInitialPokemon();
-        setPokemonToDisplay(data);
-      };
-      fetchPokemon();
-    } else {
-      const fetchPokemonByType = async () => {
-        const data = await fetchPokemonType(selectedType);
-        setPokemonToDisplay(data);
-      };
-      fetchPokemonByType();
+    let type = null;
+    let keyword = null;
+
+    if (selectedType !== 'all') {
+      type = selectedType;
     }
-  }, [selectedType]);
+    if (searchTerm.length) {
+      keyword = searchTerm;
+    }
+
+    const fetchPokemonResults = async () => {
+      const data = await fetchPokemon(type, keyword);
+      setPokemonToDisplay(data);
+    };
+    fetchPokemonResults();
+  }, [selectedType, searchTerm]);
 
   return (
     <>
+      <SearchBar keyword={searchTerm} onChange={handleSearch} />
       <Select types={types} handleTypeChange={handleTypeChange} />
       <div>
         {pokemonToDisplay.map((poke) => (
